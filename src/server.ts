@@ -25,7 +25,8 @@ app.get("/quotes/1", async (req, res) => {
         const random_id = Math.floor(
             Math.random() * parseInt(total.rows[0].count)
         );
-        const queryForRandom = "Select * from mot_quotes where id = $1";
+        const queryForRandom =
+            "Select q.id, q.quote, q.author, case when f.quote_id is not null then 'true' else 'false' end as in_favourites from mot_quotes q left join favourite_quotes f on q.id = f.quote_id where q.id = $1";
         const random = await client.query(queryForRandom, [random_id]);
         res.status(200).json(random.rows);
     } catch (err) {
@@ -49,7 +50,7 @@ app.get("/quotes/5", async (req, res) => {
             return arrOfIds;
         };
         const queryForRandom =
-            "Select * from mot_quotes where id in ($1, $2, $3, $4, $5)";
+            "Select q.id, q.quote, q.author, case when f.quote_id is not null then 'true' else 'false' end as in_favourites from mot_quotes q left join favourite_quotes f on q.id = f.quote_id where q.id in ($1, $2, $3, $4, $5)";
         const random = await client.query(queryForRandom, random_idList());
         res.status(200).json(random.rows);
     } catch (err) {

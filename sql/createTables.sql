@@ -125,4 +125,10 @@ insert into favourite_quotes (quote_id, quote, author)
 values (96, 'When everything seems to be going against you, remember that the airplane takes off against the wind, not with it.', 'Henry Ford');
 select * from favourite_quotes limit 10;
 
+
+select q.id, q.quote, q.author, case when f.quote_id is not null then 'true' else 'false' end as in_favourites
+from mot_quotes q 
+left join favourite_quotes f on q.id = f.quote_id
+where q.author = 'Henry Ford';
+
 -- source = https://www.forbes.com/sites/kevinkruse/2013/05/28/inspirational-quotes/?sh=4a74f3d76c7a
