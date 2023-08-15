@@ -100,7 +100,7 @@ app.post<{}, {}, { id: string }>("/quotes/favourites", async (req, res) => {
 app.delete("/quotes/favourites/:id", async (req, res) => {
     try {
         const del = "delete from favourite_quotes where quote_id = $1";
-        const delValue = [parseInt(req.body.id)];
+        const delValue = [parseInt(req.params.id)];
         const unFav = await client.query(del, delValue);
         res.json("Quote unfavourited");
     } catch (err) {
