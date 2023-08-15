@@ -108,7 +108,7 @@ app.delete("/quotes/favourites/:id", async (req, res) => {
     }
 });
 
-// add quote to db - can add duplicates
+// add quote to db (doesn't igore duplicates)
 app.post<{}, {}, { quote: string; author: string }>(
     "/quotes",
     async (req, res) => {
