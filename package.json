@@ -4,7 +4,7 @@
     "description": "",
     "main": "server.js",
     "scripts": {
-        "build": "yarn && yarn build; tsc",
+        "build": "yarn clean; tsc",
         "clean": "rimraf ./dist",
         "format:check": "prettier --check .",
         "format": "prettier --write .",
