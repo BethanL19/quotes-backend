@@ -3,13 +3,12 @@ import dotenv from "dotenv";
 import express from "express";
 import { Client } from "pg";
 import { getEnvVarOrFail } from "./support/envVarUtils";
+import { setupDBClientConfig } from "./support/setupDBClientConfig";
 
 dotenv.config(); //Read .env file lines as though they were env vars.
 
-const client = new Client({ connectionString: process.env.DATABASE_URL });
-if (process.env.DATABASE_URL === undefined) {
-    throw new Error("DATABASE_URL is undefined!");
-}
+const dbClientConfig = setupDBClientConfig();
+const client = new Client(dbClientConfig);
 
 //Configure express routes
 const app = express();
