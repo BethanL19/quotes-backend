@@ -62,7 +62,7 @@ app.get("/quotes/5", async (req, res) => {
 // get all favourite quotes
 app.get("/quotes/favourites", async (req, res) => {
     try {
-        const all = "SELECT * from favourite_quotes";
+        const all = "SELECT * from favourite_quotes order by votes desc";
         const allItems = await client.query(all);
         res.status(200).json(allItems.rows);
     } catch (err) {
@@ -119,6 +119,42 @@ app.post<{}, {}, { quote: string; author: string }>(
             const insertValues = [req.body.quote, req.body.author];
             const add = await client.query(insert, insertValues);
             res.json("Quote added");
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("Something went wrong");
+        }
+    }
+);
+
+// vote for fav quote
+app.patch<{ quote_id: string }, {}>(
+    "/quotes/favourites/vote/:quote_id",
+    async (req, res) => {
+        try {
+            const update =
+                "update favourite_quotes set votes = votes + 1 where quote_id = $1";
+            const quote_idNum = parseInt(req.params.quote_id);
+            const updateValue = [quote_idNum];
+            const updateVote = await client.query(update, updateValue);
+            res.json("Vote counted!");
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("Something went wrong");
+        }
+    }
+);
+
+// reset votes
+app.patch<{ quote_id: string }, {}>(
+    "/quotes/favourites/resetvotes/:quote_id",
+    async (req, res) => {
+        try {
+            const update =
+                "update favourite_quotes set votes = 0 where quote_id = $1";
+            const quote_idNum = parseInt(req.params.quote_id);
+            const updateValue = [quote_idNum];
+            const updateVote = await client.query(update, updateValue);
+            res.json("Votes reset!");
         } catch (err) {
             console.error(err);
             res.status(500).send("Something went wrong");

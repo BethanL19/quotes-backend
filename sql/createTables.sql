@@ -131,4 +131,6 @@ from mot_quotes q
 left join favourite_quotes f on q.id = f.quote_id
 where q.author = 'Henry Ford';
 
+alter table favourite_quotes add votes int default 0; 
+
 -- source = https://www.forbes.com/sites/kevinkruse/2013/05/28/inspirational-quotes/?sh=4a74f3d76c7a
