@@ -39,19 +39,20 @@ app.get("/quotes/5", async (req, res) => {
     try {
         const CountAll = "SELECT COUNT(*) from mot_quotes";
         const total = await client.query(CountAll);
-        const random_idList = () => {
-            const arrOfIds = [];
-            for (let i = 0; i < 5; i++) {
-                arrOfIds.push(
-                    Math.floor(Math.random() * parseInt(total.rows[0].count)) +
-                        1
-                );
+        const totalIds = parseInt(total.rows[0].count);
+        const randomIdList = () => {
+            const allIds = Array.from({ length: totalIds }, (_, i) => i + 1);
+            for (let i = totalIds - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allIds[i], allIds[j]] = [allIds[j], allIds[i]];
             }
-            return arrOfIds;
+            const selectedIds = allIds.slice(0, 5);
+            return selectedIds;
         };
+
         const queryForRandom =
             "Select q.id, q.quote, q.author, case when f.quote_id is not null then 'true' else 'false' end as in_favourites from mot_quotes q left join favourite_quotes f on q.id = f.quote_id where q.id in ($1, $2, $3, $4, $5)";
-        const random = await client.query(queryForRandom, random_idList());
+        const random = await client.query(queryForRandom, randomIdList());
         res.status(200).json(random.rows);
     } catch (err) {
         console.error(err);
